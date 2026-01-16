@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Analysis Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="header">
+      <h1>CV Analysis Dashboard</h1>
+      <div class="meta">CV ID: 340</div>
+      <div class="meta">Score: 66.2 / 100</div>
+      <div class="meta">Target Role: <b>UI/UX Designer</b></div>
+      <div class="meta">Predicted Category: <b>INFORMATION-TECHNOLOGY</b></div>
+    </div>
+    <div class="feature-panel">
+      <button class="feature-btn" id="btn-useful">Useful Content (3)</button>
+      <button class="feature-btn" id="btn-useless">Useless Content (1)</button>
+      <button class="feature-btn" id="btn-skillgap">🧠 Skill Gap Analysis</button>
+      <button class="feature-btn" id="btn-expgaps">🔍 Experience Gaps</button>
+      <button class="feature-btn" id="btn-charts">📊 Charts & Visuals</button>
+      <button class="feature-btn" id="btn-optimize">⚙️ Optimize CV</button>
+      <button class="feature-btn" id="btn-compare">📈 Compare CVs</button>
+      <button class="feature-btn" id="btn-probability">🎯 Shortlisting Probability</button>
+      <button class="feature-btn" id="btn-market">📊 Market Demand</button>
+      <button class="feature-btn" id="btn-export">⬇️ Export & Feedback</button>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content">
+      <button class="close-modal" id="close-modal">&times;</button>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

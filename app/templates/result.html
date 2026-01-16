@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CV Analysis Result</title>
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            margin: 5% auto;
+            display: block;
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1100;
+        }
+    </style>
+    <script>
+    window.CV_CONFIG = {
+        cv_id: {{ cv_id|default('null', true)|tojson }},
+        user_id: 1,
+        job_title: {{ target_role|default('null', true)|tojson }}
+    };
+    </script>
+</head>
+<body>
+        <div style="text-align:center; margin-top: 32px;">
+                <img id="cvImage" src="{{ url_for('static', filename='processed/' + image_path) }}" alt="CV Image" style="max-width:400px; width:100%; height:auto; border: 2px solid #ccc; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border-radius: 8px; background: #fff; margin-bottom: 18px;">
+                <div style="margin-top: 0px; font-size:1rem; color: #333;">CV ID: <b>{{ cv_id }}</b></div>
+                <div style="margin-top: 10px; font-size:2rem; color: #fbc02d; font-weight:700;">Score: {{ quality_score if quality_score is not none else 0 }} / 100</div>
+                <div style="margin-top: 8px; font-size:1.15rem; color:#1976d2; font-weight:600;">Target Role: <span style="color:#d32f2f;">{{ target_role }}</span></div>
+                <div style="margin-top: 8px; font-size:1.15rem; color:#388e3c; font-weight:600;">Predicted Job Category: <span style="color:#d32f2f;">{{ job_category }}</span></div>
+        </div>
+        <div class="feature-panel">
+            <button onclick="toggleSection('contentQuality')">📄 Content Quality</button>
+            <button onclick="toggleSection('skillGap')">🧠 Skill Gap Analysis</button>
+            <button onclick="toggleSection('experienceGaps')">🔍 Experience Gaps</button>
+            <button onclick="toggleSection('charts')">📊 Charts & Visuals</button>
+            <button onclick="toggleSection('optimize')">⚙️ Optimize CV</button>
+            <button onclick="toggleSection('compare')">📈 Compare CVs</button>
+            <button onclick="toggleSection('probability')">🎯 Shortlisting Probability</button>
+            <button onclick="toggleSection('market')">📊 Market Demand</button>
+            <button onclick="toggleSection('export')">⬇️ Export & Feedback</button>
+        </div>
+        <!-- Feature Sections -->
+        <div id="contentQuality" class="feature-section" style="display:none;">
+            <h3>📄 Content Quality</h3>
+            <button onclick="toggleSection('usefulList')">Useful Content ({{ useful_content|length }})</button>
+            <div id="usefulList" style="display:none;">
+                <ul>
+                    {% for sent in useful_content %}
+                    <li>{{ sent }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <button onclick="toggleSection('uselessList')">Useless Content ({{ useless_content|length }})</button>
+            <div id="uselessList" style="display:none;">
+                <ul>
+                    {% for sent in useless_content %}
+                    <li>{{ sent }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div id="skillGap" class="feature-section" style="display:none;">
+            <h3>🧠 Skill Gap Analysis</h3>
+            <!-- ...existing skill gap content... -->
+        </div>
+        <div id="experienceGaps" class="feature-section" style="display:none;">
+            <h3>🔍 Experience Gaps</h3>
+            <!-- ...existing experience gaps content... -->
+        </div>
+        <div id="charts" class="feature-section" style="display:none;">
+            <h3>📊 Charts & Visuals</h3>
+            <!-- ...existing charts content... -->
+        </div>
+        <div id="optimize" class="feature-section" style="display:none;">
+            <h3>⚙️ Optimize CV</h3>
+            <!-- ...existing optimize content... -->
+        </div>
+        <div id="compare" class="feature-section" style="display:none;">
+            <h3>📈 Compare CVs</h3>
+            <!-- ...existing compare content... -->
+        </div>
+        <div id="probability" class="feature-section" style="display:none;">
+            <h3>🎯 Shortlisting Probability</h3>
+            <!-- ...existing probability content... -->
+        </div>
+        <div id="market" class="feature-section" style="display:none;">
+            <h3>📊 Market Demand</h3>
+            <!-- ...existing market demand content... -->
+        </div>
+        <div id="export" class="feature-section" style="display:none;">
+            <h3>⬇️ Export & Feedback</h3>
+            <!-- ...existing export & feedback content... -->
+        </div>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                var ctx = document.getElementById('usefulChart').getContext('2d');
+                var usefulCount = {{ useful_content|length|default(0)|tojson }};
+                var uselessCount = {{ useless_content|length|default(0)|tojson }};
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Useful', 'Useless'],
+                        datasets: [{
+                            data: [usefulCount, uselessCount],
+                            backgroundColor: ['#43a047', '#e53935'],
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: { display: true, position: 'bottom' }
+                        },
+                        cutout: '70%',
+                        responsive: false
+                    }
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+    <!-- Removed legacy always-visible feature blocks and show buttons below the feature panel. All feature content is now only inside toggleable sections above. -->
+                        datasets: [{
+                            label: 'Skills per Cluster',
+                            data: clusterSizes,
+                            backgroundColor: '#7e57c2',
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        responsive: false,
+                        scales: { y: { beginAtZero: true, stepSize: 1 } }
+                    }
+                });
+                </script>
+        </div>
+    </div>
+        <style>
+            .feature-panel {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+                margin: 24px 0;
+            }
+            .feature-panel button {
+                background: #1976d2;
+                color: #fff;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+            .feature-section {
+                max-width: 900px;
+                margin: 24px auto;
+                padding: 20px;
+                background: #f9f9f9;
+                border-radius: 10px;
+            }
+        </style>
+    <script>
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      el.style.display = (el.style.display === 'none' || !el.style.display)
+        ? 'block'
+        : 'none';
+    }
+    </script>
+    <!-- Removed all always-visible blocks and buttons below the feature panel. All content is now only inside the toggleable feature sections. -->
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Analysis Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='cv-dashboard/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-premium-bg">
+    <div class="dashboard-container premium-shadow">
+      <header class="dashboard-premium-header">
+        <div class="premium-header-main">
+          <div class="premium-header-left">
+            <h1 class="premium-title">CV Analysis Dashboard</h1>
+            <div class="premium-subtitle">AI-powered insights for your resume</div>
+            <div class="premium-metrics-row">
+              <div class="premium-metric premium-metric-id">
+                <div class="premium-metric-label">CV ID</div>
+                <div class="premium-metric-value">{{ cv_id }}</div>
+              </div>
+              <div class="premium-metric premium-metric-score">
+                <div class="premium-metric-label">Quality Score</div>
+                <div class="premium-metric-value">{{ quality_score }}/100</div>
+                <div class="premium-progress-bar"><div class="premium-progress-fill" style="width: {{ quality_score }}%;"></div></div>
+              </div>
+              <div class="premium-metric premium-metric-role">
+                <div class="premium-metric-label">Target Role</div>
+                <div class="premium-metric-value">{{ target_role }}</div>
+              </div>
+              <div class="premium-metric premium-metric-category">
+                <div class="premium-metric-label">Predicted Category</div>
+                <div class="premium-metric-value">{{ job_category }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="premium-header-right">
+            <div class="premium-cv-image-wrapper">
+              <img src="{{ url_for('static', filename='processed/cv_' + (cv_id|string) + '.png') }}" alt="CV Image" class="cv-image zoomable-cv-img">
+              <div class="premium-image-hint">Click to zoom 🔍</div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="dashboard-main premium-main">
+        <section class="premium-section">
+          <div class="premium-section-header">
+            <h2 class="premium-section-title">Analysis Features</h2>
+            <div class="premium-section-desc">Select a tool to analyze and improve your CV</div>
+          </div>
+          <div class="premium-features-grid">
+            <button class="feature-btn" id="btn-content-quality">
+              <span class="feature-icon">📝</span>
+              <span class="feature-text"><h3>Content Quality</h3><p>Analyze content effectiveness</p></span>
+            </button>
+            <button class="feature-btn" id="btn-skillgap">
+              <span class="feature-icon">🧠</span>
+              <span class="feature-text"><h3>Skill Gap Analysis</h3><p>Identify missing competencies</p></span>
+              <span class="feature-badge ai">AI</span>
+            </button>
+            <button class="feature-btn" id="btn-expgaps">
+              <span class="feature-icon">🔍</span>
+              <span class="feature-text"><h3>Experience Gaps</h3><p>Detect experience gaps</p></span>
+            </button>
+            <button class="feature-btn" id="btn-charts">
+              <span class="feature-icon">📊</span>
+              <span class="feature-text"><h3>Charts & Visuals</h3><p>Visual data representation</p></span>
+            </button>
+            <button class="feature-btn" id="btn-optimize">
+              <span class="feature-icon">⚙️</span>
+              <span class="feature-text"><h3>Optimize CV</h3><p>Get improvement suggestions</p></span>
+              <span class="feature-badge popular">Popular</span>
+            </button>
+            <button class="feature-btn" id="btn-compare">
+              <span class="feature-icon">📈</span>
+              <span class="feature-text"><h3>Compare CVs</h3><p>Compare with other CVs</p></span>
+            </button>
+            <button class="feature-btn" id="btn-probability">
+              <span class="feature-icon">🎯</span>
+              <span class="feature-text"><h3>Shortlisting Probability</h3><p>Estimate your chances</p></span>
+            </button>
+            <button class="feature-btn" id="btn-market">
+              <span class="feature-icon">📊</span>
+              <span class="feature-text"><h3>Market Demand</h3><p>Current market trends</p></span>
+            </button>
+            <button class="feature-btn" id="btn-export">
+              <span class="feature-icon">⬇️</span>
+              <span class="feature-text"><h3>Export & Feedback</h3><p>Download and get feedback</p></span>
+            </button>
+          </div>
+        </section>
+        <section class="premium-section">
+          <div class="insight-card premium-insight">
+            <span class="insight-icon">💡</span>
+            <div class="insight-content">
+              <h4>Quick Tip</h4>
+              <p>Start with <b>"Content Quality"</b> to get a baseline, then use <b>"Optimize CV"</b> for specific improvements.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content">
+      <button class="close-modal" id="close-modal">&times;</button>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+  <script>
+    window.USEFUL_CONTENT = {{ useful_content|default([])|tojson|safe }};
+    window.USELESS_CONTENT = {{ useless_content|default([])|tojson|safe }};
+    window.SECTION_HEADINGS = {{ section_content|default([])|tojson|safe }};
+    window.SKILL_GAP_RESULT = {{ skill_gap_result|default({})|tojson|safe }};
+    window.GAPS = {{ gaps|default([])|tojson|safe }};
+    window.SKILL_CLUSTERS = {{ skill_clusters|default([])|tojson|safe }};
+    window.EXPLANATION = {{ explanation|default('')|tojson|safe }};
+    window.TARGET_ROLE = {{ target_role|default('')|tojson|safe }};
+    window.JOB_CATEGORY = {{ job_category|default('')|tojson|safe }};
+    window.QUALITY_SCORE = {{ quality_score|default(0)|tojson|safe }};
+    window.CV_ID = {{ cv_id|default(0)|tojson|safe }};
+  </script>
+  <script src="{{ url_for('static', filename='cv-dashboard/script.js') }}"></script>
+  <script>
+    // Add zoom handler for dashboard CV image
+    document.addEventListener('DOMContentLoaded', function() {
+      const img = document.querySelector('.zoomable-cv-img');
+      if (img) {
+        img.onclick = function() {
+          const modal = document.createElement('div');
+          modal.style.position = 'fixed';
+          modal.style.left = 0;
+          modal.style.top = 0;
+          modal.style.width = '100vw';
+          modal.style.height = '100vh';
+          modal.style.background = 'rgba(0,0,0,0.65)';
+          modal.style.display = 'flex';
+          modal.style.alignItems = 'center';
+          modal.style.justifyContent = 'center';
+          modal.style.zIndex = 2000;
+          modal.innerHTML = `<img src='${img.src}' style='max-width:90vw;max-height:80vh;display:block;margin:0 auto;border-radius:12px;box-shadow:0 4px 32px #0005;'><span style='position:absolute;top:30px;right:50px;font-size:2.5rem;color:#fff;cursor:pointer;' id='closeZoom'>&times;</span>`;
+          document.body.appendChild(modal);
+          modal.onclick = function(e) {
+            if (e.target === modal || e.target.id === 'closeZoom') {
+              document.body.removeChild(modal);
+            }
+          };
+        };
+      }
+    });
+  </script>
+</body>
+</html>

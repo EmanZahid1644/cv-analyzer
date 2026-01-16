@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generated CV</title>
+    <style>
+        body { font-family: Arial, sans-serif; width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 1px solid #ccc; }
+        .section { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>{{ name }}</h1>
+    {% for section, content in sections.items() %}
+        <div class="section">
+            <h2>{{ section }}</h2>
+            <p>{{ content.replace('\n', '<br>')|safe }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>

@@ -8,8 +8,8 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="ILovePakistan@786",  # Change to your root password
-    database="cv_analysis_system"
+    password="",  # Change to your root password
+    database=""
 )
 cursor = conn.cursor(dictionary=True)
 print("Connected to database!")
